@@ -43,7 +43,7 @@ export async function login(req, res) {
     const d_name = user.rows[0].name;
     const d_email = user.rows[0].email;
     const d_role = user.rows[0].role;
-    const accessToken = generateToken(d_id, d_email, d_role);
+    const accessToken = generateToken(d_id, d_email);
     const data = {
       user: {
         accessToken,
