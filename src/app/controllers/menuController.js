@@ -9,7 +9,21 @@ export async function getMenu(req, res) {
       return res.status(200).json({ status: 'ok', message: 'Menu kosong', data: { menu: [] } });
     }
 
-    return res.status(200).json({ status: 'ok', message: 'Berhasil menampilkan menu', data: { menu: menu } });
+    const transformedData = menu.map((item) => {
+      return {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        discount: item.discount,
+        menuType: {
+          id: item.menuTypeId,
+          name: item.menuType,
+          isAdditional: item.isAdditional,
+        },
+      };
+    });
+
+    return res.status(200).json({ status: 'ok', message: 'Berhasil menampilkan menu', data: { menu: transformedData } });
   } catch (error) {
     return res.status(500).json({ status: 'failed', message: 'Server Error', data: error.message });
   }
