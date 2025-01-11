@@ -2,7 +2,7 @@
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
     "target": "es2016" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-    "module": "CommonJS" /* Specify what module code is generated. */,
+    "module": "CommonJS" /* Specify what module code is generated. Cannot use ESNEXT, because type:module is needed in package.json. however, the compiler cannot recognise .ts file when there is type:module in package.json */,
     "baseUrl": "./" /* Specify the base directory to resolve non-relative module names. */,
     //"paths": { "@/*": ["./src/*"] } /* Specify a set of entries that re-map imports to additional lookup locations. */,
     "allowJs": true /* Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. */,
