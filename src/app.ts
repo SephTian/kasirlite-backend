@@ -1,7 +1,7 @@
 //import express, { json } from 'express';
 import express from 'express';
 import cors from 'cors';
-import routes from './app/routes/index.js';
+import routes from './app/routes/index';
 
 // INITIATE APP FOR EXPRESS
 const app = express();

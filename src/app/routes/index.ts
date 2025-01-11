@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import authRoute from './authRoute.js';
-import menuRoute from './menuRoute.js';
-import orderRoute from './orderRoute.js';
+import authRoute from './authRoute';
+import menuRoute from './menuRoute';
+import orderRoute from './orderRoute';
 
 // INITIATE ROUTE
 const router = Router();

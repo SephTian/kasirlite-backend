@@ -1,8 +1,8 @@
-import pool from '../../config/db.js';
+import pool from '../../config/db';
 import bcrypt from 'bcrypt';
-import { generateToken } from '../../utils/jwt.js';
+import { generateToken } from '../../utils/jwt';
 
-export async function checkAccount(email) {
+export async function checkAccount(email: string) {
   const query = `
     SELECT u.id, u.name, u.email, u.password, r.name AS role
     FROM "user" AS u
@@ -14,13 +14,19 @@ export async function checkAccount(email) {
   return user.rows[0];
 }
 
-export async function checkPassword(userPassword, dbPassword) {
+export async function checkPassword(userPassword: string, dbPassword: string) {
   const match = await bcrypt.compare(userPassword, dbPassword);
 
   return match;
 }
 
-export function formattingUserData(userData) {
+type data = {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+};
+export function formattingUserData(userData: data) {
   const d_id = userData.id;
   const d_name = userData.name;
   const d_email = userData.email;
