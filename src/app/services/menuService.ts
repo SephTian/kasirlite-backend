@@ -1,12 +1,32 @@
-import pool from '../../config/db';
+import prisma from '../../utils/prisma';
 
-export async function getAllMenu() {
-  const query = `
-    SELECT m.id, m.name, m.image, m.menu_type_id as "menuTypeId", mt.name as "menuType", mt.is_additional as "isAdditional", m.price, m.discount, m.disabled
-    FROM "menu" AS m
-    LEFT JOIN "menu_type" AS mt ON m.menu_type_id = mt.id
-    ORDER BY mt.name ASC, mt.is_additional DESC, m.disabled DESC`;
-  const menu = await pool.query(query.trim());
+export async function getAllMenu({ keyword = '', type = '' }: { keyword: string | undefined; type: string | undefined }) {
+  const menus = await prisma.menu.findMany({
+    include: {
+      menuType: {
+        // Ini akan meng-join tabel 'menu_type'
+        select: {
+          name: true,
+          isAdditional: true,
+        },
+      },
+    },
+    where: {
+      name: {
+        contains: keyword, // Similar to SQL's LIKE '%value%'
+        mode: 'insensitive', // Optional: Makes the search case-insensitive
+      },
+      menuType: {
+        name: {
+          contains: type, // Similar to SQL's LIKE '%value%'
+          mode: 'insensitive', // Optional: Makes the search case-insensitive
+        },
+      },
+    },
+    orderBy: [{ menuType: { name: 'asc' } }, { menuType: { isAdditional: 'desc' } }, { disabled: 'desc' }],
+  });
 
-  return menu.rows;
+  if (!menus) return [];
+
+  return menus;
 }
