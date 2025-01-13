@@ -33,7 +33,13 @@ export async function login(req: Request, res: Response) {
 
     const accessToken = generateToken(user.id, user.email);
 
-    res.status(200).json({ status: 'ok', message: 'Berhasil Login', data: { id: user.id, name: user.name, email: user.email, role: user.role?.name, accessToken } });
+    res.status(200).json({
+      status: 'ok',
+      message: 'Berhasil Login',
+      data: {
+        user: { id: user.id, name: user.name, email: user.email, role: user.role?.name, accessToken },
+      },
+    });
     return;
   } catch (e) {
     if (e instanceof Error) {
