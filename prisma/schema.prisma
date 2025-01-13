@@ -8,73 +8,61 @@ datasource db {
 }
 
 model menu {
-  id               BigInt             @id @default(autoincrement())
-  menu_type_id     BigInt
-  name             String             @db.VarChar(100)
-  price            Decimal            @default(0) @db.Decimal(10, 0)
-  discount         Decimal            @default(0) @db.Decimal(10, 0)
-  disabled         Boolean            @default(false)
-  has_additional   Boolean?           @default(true)
-  image            String?
-  menu_type        menu_type          @relation(fields: [menu_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  order_additional order_additional[]
-  order_detail     order_detail[]
+  id           BigInt         @id @default(autoincrement())
+  menuTypeId   BigInt         @map("menu_type_id")
+  name         String         @db.VarChar(100)
+  price        Decimal        @default(0) @db.Decimal(10, 0)
+  discount     Decimal        @default(0) @db.Decimal(10, 0)
+  disabled     Boolean        @default(false)
+  image        String?
+  menuType     menu_type      @relation(fields: [menuTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  orderDetail  order_detail[]
 }
 
 model menu_type {
   id            BigInt  @id @default(autoincrement())
   name          String  @db.VarChar(50)
-  is_additional Boolean @default(false)
+  isAdditional  Boolean @default(false) @map("is_additional")
   menu          menu[]
 }
 
 model order {
   id            BigInt            @id @default(autoincrement())
-  user_id       BigInt
-  customer_name String            @db.VarChar(100)
+  userId        BigInt            @map("user_id")
+  customerName  String            @db.VarChar(100) @map("customer_name")
   date          DateTime          @db.Timestamp(6)
   discount      Decimal           @default(0) @db.Decimal(10, 0)
-  total_price   Decimal           @db.Decimal(10, 0)
+  totalPrice    Decimal           @db.Decimal(10, 0) @map("total_price")
   tax           Decimal           @default(0) @db.Decimal(10, 0)
   note          String?
   status        order_status_enum
   type          order_type_enum
-  user          user              @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  order_detail  order_detail[]
+  user          user              @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  orderDetail   order_detail[]
   payment       payment[]
 }
 
-model order_additional {
-  id              BigInt       @id @default(autoincrement())
-  order_detail_id BigInt
-  menu_id         BigInt
-  sub_price       Decimal      @default(0) @db.Decimal(10, 3)
-  menu            menu         @relation(fields: [menu_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  order_detail    order_detail @relation(fields: [order_detail_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-}
-
 model order_detail {
-  id               BigInt             @id @default(autoincrement())
-  menu_id          BigInt?
-  order_id         BigInt
-  quantity         Decimal            @default(0) @db.Decimal
-  sub_price        Decimal            @default(0) @db.Decimal(10, 3)
-  menu_name        String             @db.VarChar(200)
-  order_additional order_additional[]
-  menu             menu?              @relation(fields: [menu_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  order            order              @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id        BigInt  @id @default(autoincrement())
+  menuId    BigInt?  @map("menu_id")
+  orderId   BigInt   @map("order_id")
+  quantity  Decimal @default(0) @db.Decimal
+  subPrice  Decimal  @default(0) @db.Decimal(10, 3) @map("sub_price")
+  menuName  String  @db.VarChar(200) @map("menu_name")
+  menu      menu?   @relation(fields: [menuId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  order     order   @relation(fields: [orderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model payment {
   id              BigInt       @id @default(autoincrement())
-  payment_type_id BigInt
-  order_id        BigInt
+  paymentTypeId   BigInt       @map("payment_type_id")
+  orderId         BigInt       @map("order_id")
   name            String       @db.VarChar
   payment         Decimal      @default(0) @db.Decimal(10, 3)
   proof           String?
   date            DateTime     @db.Timestamp(6)
-  order           order        @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  payment_type    payment_type @relation(fields: [payment_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  order           order        @relation(fields: [orderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  paymentType     payment_type @relation(fields: [paymentTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model payment_type {
@@ -95,11 +83,11 @@ model user {
   name       String    @db.VarChar
   email      String    @db.VarChar
   password   String    @db.VarChar(100)
-  updated_at DateTime? @db.Timestamp(6)
-  created_at DateTime? @db.Timestamp(6)
-  role_id    BigInt?
+  updated_at DateTime? @db.Timestamp(6) @map("updated_at")
+  created_at DateTime? @db.Timestamp(6) @map("created_at")
+  roleId     BigInt?   @map("role_id")
   order      order[]
-  role       role?     @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  role       role?     @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum order_status_enum {
