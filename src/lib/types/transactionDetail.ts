@@ -3,7 +3,7 @@ import { Transaction } from './transaction';
 
 export type TransactionDetail = {
   id: number;
-  transactionId: Pick<Transaction, 'id'>;
+  transactionId: Transaction['id'];
   menuId: number;
   menu?: Menu | null;
   menuName: string;

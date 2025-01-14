@@ -4,17 +4,15 @@ export const postTransactionSchema = z
   .object({
     cart: z.array(
       z.object({
-        menu: z.object({
-          id: z.coerce.number().optional(),
-          name: z.string({ required_error: 'Nama harus ada' }).min(2, 'nama minimal 2 huruf'),
-          price: z.coerce.number().min(0, 'harga minimal 0 rupiah'),
-        }),
+        menuId: z.coerce.number().optional().nullable(),
+        menuName: z.string({ required_error: 'Jenis Pembayaran harus dipilih', invalid_type_error: 'Jenis Pembayaran harus dipilih' }).min(2, 'Nama menu minimal 2 huruf'),
+        subPrice: z.coerce.number().min(0, 'Harga minimal 0 rupiah'),
         quantity: z.coerce.number().min(1, 'Minimal 1 kuantitas menu'),
       })
     ),
     discount: z.coerce.number().min(0, 'Diskon minimal 0 rupiah'),
     totalPrice: z.coerce.number().min(0, 'Total Price minimal 0 rupiah'),
-    type: z.string({ required_error: 'Tipe transaksi harus dipilih', invalid_type_error: 'Tipe transaksi harus dipilih' }),
+    type: z.enum(['DIANTAR', 'DITEMPAT', 'DIBUNGKUS']),
     paymentKind: z
       .string({ required_error: 'Jenis Pembayaran harus dipilih', invalid_type_error: 'Jenis Pembayaran harus dipilih' })
       .refine((val) => val === 'N' || val === 'L', { message: 'Huruf harus N atau L' }),
@@ -23,7 +21,7 @@ export const postTransactionSchema = z
     note: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.paymentKind === 'L' && !data.paymentType) {
+    if (data.paymentKind === 'N' && !data.paymentType) {
       ctx.addIssue({
         code: 'custom', // Kode error harus ada
         path: ['paymentType'], // Field yang terkena error
