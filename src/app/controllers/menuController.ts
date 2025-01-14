@@ -5,8 +5,8 @@ import { jsonForBigInt } from '../../utils';
 export async function getMenus(req: Request, res: Response) {
   try {
     const keyword = req.query.keyword as string;
-    const type = req.query.type as string;
-    const menus = await getAllMenu({ keyword, type });
+    const category = req.query.category as string;
+    const menus = await getAllMenu({ keyword, category });
 
     //Jika menu tidak ada
     if (menus.length === 0) {
