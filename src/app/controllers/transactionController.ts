@@ -2,7 +2,7 @@ import { postTransactionSchema } from '../../lib/schemas/transactionSchema';
 import { Request, Response } from 'express';
 import { addTransaction } from '../services/transactionService';
 import { JwtPayload, verify } from 'jsonwebtoken';
-import { jsonForBigInt } from 'src/utils';
+import { jsonForBigInt } from '../../utils';
 
 export async function postTransaction(req: Request, res: Response) {
   try {
