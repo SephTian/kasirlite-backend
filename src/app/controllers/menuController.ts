@@ -13,7 +13,7 @@ export async function getMenus(req: Request, res: Response) {
       res.status(200).json({ status: 'ok', message: 'Menu kosong', data: { menus: [] } });
       return;
     }
-    console.log(menus);
+
     res.status(200).send(jsonForBigInt({ status: 'ok', message: 'Berhasil menampilkan menu', data: { menus } }));
     return;
   } catch (error) {
