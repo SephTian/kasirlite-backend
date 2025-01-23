@@ -4,7 +4,7 @@ import { Payment } from './payment';
 import { User } from './user';
 
 export type Transaction = {
-  id: number; // dri BE
+  id: number | bigint; // dri BE
   userId: number;
   cashier: Pick<User, 'id' | 'name'>; // dri BE
   status: string; // dri BE
