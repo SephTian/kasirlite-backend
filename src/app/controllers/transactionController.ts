@@ -1,8 +1,10 @@
 import { postTransactionSchema } from '../../lib/schemas/transactionSchema';
 import { Request, Response } from 'express';
 import { addTransaction } from '../services/transactionService';
-import { JwtPayload, verify } from 'jsonwebtoken';
 import { jsonForBigInt } from '../../utils';
+import { decodeToken } from '../../utils/jwt';
+import { addTransactionDetail } from '../services/transactionDetailService';
+import { TransactionDetail } from 'src/lib/types';
 
 export async function postTransaction(req: Request, res: Response) {
   try {
@@ -16,26 +18,39 @@ export async function postTransaction(req: Request, res: Response) {
       });
       return;
     }
-    // Take id from token
-    const token = req.headers.authorization?.split(' ')[1] as string;
-    const decodedToken = verify(token, process.env.SECRET_KEY as string) as JwtPayload;
 
-    const b = validatedData.data;
-    const data = await addTransaction({
-      discount: b.discount,
-      totalPrice: b.totalPrice,
-      customerName: b.customerName,
-      paymentKind: b.paymentKind,
-      note: b.note,
-      type: b.type,
+    // decode token to take user id that use this api
+    const decodedToken = decodeToken(req.headers.authorization?.split(' ')[1] as string);
+
+    // take data that has been validated
+    const vd = validatedData.data;
+
+    // add transaction
+    const newTransaction = await addTransaction({
+      discount: vd.discount,
+      totalPrice: vd.totalPrice,
+      customerName: vd.customerName,
+      paymentKind: vd.paymentKind,
+      note: vd.note,
+      type: vd.type,
       userId: decodedToken.id,
     });
 
-    //@ TODO input ke transaction detail
-    for (const cartItem of b.cart) {
-    }
+    //@ TODO input ke transaction detail -- DONE
+    const newDetailTransaction = await addTransactionDetail(vd.cart, newTransaction.id);
 
     //@ TODO input ke payment jika bayar langsung
+
+    // mapping data to make it better on frontend
+    const data = {
+      ...newTransaction,
+      transactionDetail: newDetailTransaction.map((item) => {
+        const temp: Partial<TransactionDetail> = item;
+        delete temp['transactionId'];
+        return temp;
+      }),
+    };
+
     res.status(200).send(jsonForBigInt({ status: 'ok', message: 'Berhasil menambahkan transaksi', data }));
     return;
   } catch (e) {
