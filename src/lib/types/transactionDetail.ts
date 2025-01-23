@@ -4,7 +4,7 @@ import { Transaction } from './transaction';
 export type TransactionDetail = {
   id: number | bigint;
   transactionId: Transaction['id'];
-  menuId?: number | null;
+  menuId?: number | bigint | null;
   menu?: Menu | null;
   menuName: string;
   quantity: number;

@@ -2,8 +2,8 @@ import { PaymentType } from './paymentType';
 
 export type Payment = {
   id: number | bigint;
-  transactionId: number;
-  paymentTypeId: number;
+  transactionId: number | bigint;
+  paymentTypeId: number | bigint;
   name: string;
   payment: number;
   paymentType: PaymentType;
