@@ -1,6 +1,20 @@
 import prisma from '../../utils/prisma';
 
-export async function getAllMenu({ keyword = '', category = '' }: { keyword: string | undefined; category: string | undefined }) {
+export async function getAllMenu({
+  keyword = '',
+  category = '',
+  page = undefined,
+  limit = undefined,
+}: {
+  keyword: string | undefined;
+  category: string | undefined;
+  page: number | undefined;
+  limit: number | undefined;
+}) {
+  const skip = page && limit ? (page - 1) * limit : undefined;
+  const take = limit || undefined;
+
+  // query all menu
   const menus = await prisma.menu.findMany({
     select: {
       id: true,
@@ -30,9 +44,46 @@ export async function getAllMenu({ keyword = '', category = '' }: { keyword: str
       },
     },
     orderBy: [{ menuCategory: { name: 'asc' } }, { menuCategory: { isAdditional: 'desc' } }, { disabled: 'desc' }],
+    skip: skip,
+    take: take,
   });
 
-  if (!menus) return [];
+  let totalItems = 0;
+  if (page && limit) {
+    totalItems = await prisma.menu.count({
+      where: {
+        name: {
+          contains: keyword,
+          mode: 'insensitive',
+        },
+        menuCategory: {
+          name: {
+            contains: category,
+            mode: 'insensitive',
+          },
+        },
+      },
+    });
+  }
 
-  return menus;
+  const pagination =
+    page && limit
+      ? {
+          totalItems,
+          totalPages: Math.ceil(totalItems / limit),
+          currentPage: page,
+          limit,
+        }
+      : null;
+
+  if (!menus)
+    return {
+      menus: [],
+      pagination,
+    };
+
+  return {
+    menus,
+    pagination,
+  };
 }
