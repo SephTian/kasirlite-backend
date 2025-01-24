@@ -7,12 +7,14 @@ export async function getMenus(req: Request, res: Response) {
     // filter
     const keyword = (req.query.keyword as string) || '';
     const category = (req.query.category as string) || '';
+    const maxPrice = Number(req.query.maxPrice) || undefined;
+    const minPrice = Number(req.query.minPrice) || undefined;
 
     //pagination
     const page = Number(req.query.page) || undefined; // page
     const limit = 20;
 
-    const { menus, pagination } = await getAllMenu({ keyword, category, page, limit });
+    const { menus, pagination } = await getAllMenu({ keyword, category, page, limit, minPrice, maxPrice });
 
     //Jika menu tidak ada
     if (menus.length === 0) {

@@ -5,11 +5,15 @@ export async function getAllMenu({
   category = '',
   page = undefined,
   limit = undefined,
+  minPrice = undefined,
+  maxPrice = undefined,
 }: {
   keyword: string | undefined;
   category: string | undefined;
   page: number | undefined;
   limit: number | undefined;
+  minPrice: number | undefined;
+  maxPrice: number | undefined;
 }) {
   const skip = page && limit ? (page - 1) * limit : undefined;
   const take = limit || undefined;
@@ -35,6 +39,10 @@ export async function getAllMenu({
       name: {
         contains: keyword, // Similar to SQL's LIKE '%value%'
         mode: 'insensitive', // Optional: Makes the search case-insensitive
+      },
+      price: {
+        ...(minPrice && { gte: minPrice }),
+        ...(maxPrice && { lte: maxPrice }),
       },
       menuCategory: {
         name: {
