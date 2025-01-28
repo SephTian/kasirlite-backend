@@ -33,6 +33,7 @@ export async function postTransaction(req: Request, res: Response) {
       paymentKind: vd.paymentKind,
       note: vd.note,
       type: vd.type,
+      date: vd.date,
       userId: decodedToken.id,
     });
 
@@ -42,7 +43,7 @@ export async function postTransaction(req: Request, res: Response) {
     //@ TODO input ke payment jika bayar langsung
 
     // mapping data to make it better on frontend
-    const data = {
+    const transaction = {
       ...newTransaction,
       transactionDetail: newDetailTransaction.map((item) => {
         const temp: Partial<TransactionDetail> = item;
@@ -51,7 +52,7 @@ export async function postTransaction(req: Request, res: Response) {
       }),
     };
 
-    res.status(200).send(jsonForBigInt({ status: 'ok', message: 'Berhasil menambahkan transaksi', data }));
+    res.status(200).send(jsonForBigInt({ status: 'ok', message: 'Berhasil menambahkan transaksi', data: { transaction } }));
     return;
   } catch (e) {
     if (e instanceof Error) {

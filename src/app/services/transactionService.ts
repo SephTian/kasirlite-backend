@@ -8,10 +8,12 @@ export async function addTransaction({
   customerName,
   paymentKind,
   note = '',
+  date,
   type,
   userId,
-}: Omit<Transaction, 'id' | 'cashier' | 'date' | 'menus' | 'payments' | 'status' | 'tax'> & { paymentKind: string }) {
+}: Omit<Transaction, 'id' | 'cashier' | 'menus' | 'payments' | 'status' | 'tax'> & { paymentKind: string }) {
   const tax = totalPrice * TAX;
+  console.log(date);
   const transaction = await prisma.transaction.create({
     data: {
       userId,
@@ -22,7 +24,8 @@ export async function addTransaction({
       note,
       type: type,
       status: paymentKind === 'N' ? 'LUNAS' : 'BELUM_BAYAR',
-      date: new Date(),
+      date: new Date(date),
+      createdAt: new Date(),
     },
   });
   return transaction;

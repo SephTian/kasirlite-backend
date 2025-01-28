@@ -13,6 +13,10 @@ export const postTransactionSchema = z
     discount: z.coerce.number().min(0, 'Diskon minimal 0 rupiah'),
     totalPrice: z.coerce.number().min(0, 'Total Price minimal 0 rupiah'),
     type: z.enum(['DIANTAR', 'DITEMPAT', 'DIBUNGKUS']),
+    date: z
+      .string({ required_error: 'Tanggal harus diisi' })
+      .min(1, { message: 'Tanggal pesan harus diisi' })
+      .regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/, 'Format tanggal harus YYYY-MM-DDThh:mm:ss'),
     paymentKind: z
       .string({ required_error: 'Jenis Pembayaran harus dipilih', invalid_type_error: 'Jenis Pembayaran harus dipilih' })
       .refine((val) => val === 'N' || val === 'L', { message: 'Huruf harus N atau L' }),
