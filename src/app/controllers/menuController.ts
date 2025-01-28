@@ -12,9 +12,8 @@ export async function getMenus(req: Request, res: Response) {
 
     //pagination
     const page = Number(req.query.page) || undefined; // page
-    const limit = 20;
 
-    const { menus, pagination } = await getAllMenu({ keyword, category, page, limit, minPrice, maxPrice });
+    const { menus, pagination } = await getAllMenu({ keyword, category, page, minPrice, maxPrice });
 
     //Jika menu tidak ada
     if (menus.length === 0) {
